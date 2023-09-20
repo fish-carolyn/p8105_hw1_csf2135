@@ -25,7 +25,7 @@ The “Early January hourly weather data” includes hourly weather data for New
 The variables included in this data frame are: `r colnames(early_january_weather)`.
 
 __Make a scatterplot of temp (y) vs time_hour (x); color points using the humid variable. Describe patterns that are apparent in this plot.__
-```{r message=FALSE}
+```{r echo=TRUE, message=FALSE}
 p1_plot<- ggplot2::ggplot(early_january_weather, aes(x= time_hour, y= temp))+
                     geom_point(aes(color=humid))
 print(p1_plot)
