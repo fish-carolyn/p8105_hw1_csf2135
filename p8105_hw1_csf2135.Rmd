@@ -1,0 +1,93 @@
+---
+title: "P8105_Homework 1"
+author: "UNI: csf2135"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(moderndive)
+library(tidyverse)
+```
+
+## Problem 1
+```{r, echo=TRUE}
+data("early_january_weather")
+```
+
+```{r, echo=FALSE}
+?early_january_weather
+```
+
+__Write a short description of the dataset using inline R code__
+The “Early January hourly weather data” includes hourly weather data for New York City regional airports (LGA, JFK, EWR) from January `r min(early_january_weather$day)`, 2013- January `r max(early_january_weather$day)`, 2013. The data frame includes `r nrow(early_january_weather)` rows and `r ncol(early_january_weather)` variables. The mean reported temperature for January 2013 is `r round(mean(early_january_weather$temp), digits=2)` F.
+
+The variables included in this data frame are: `r colnames(early_january_weather)`.
+
+__Make a scatterplot of temp (y) vs time_hour (x); color points using the humid variable. Describe patterns that are apparent in this plot.__
+```{r message=FALSE}
+p1_plot<- ggplot2::ggplot(early_january_weather, aes(x= time_hour, y= temp))+
+                    geom_point(aes(color=humid))
+print(p1_plot)
+
+ggsave("p1_plot.png")
+```
+
+
+Looking at the plot of hourly temperature and humidity by date we can see that average temperature changes cyclically where temperatures rise and fall every day. Further, we can see that there was a length of time between Jan12-Jan15 where relative humidity was higher than observed earlier in January. Finally, there is an overall trend of increasing average temperatures until temperatures fall dramatically after January 14. The plot suggests that days of high relative humidity may precede colder temperatures.
+
+
+## Problem 2
+
+__Create a data frame comprised of:__
+
+*   a random sample of size 10 from a standard Normal distribution
+*   a logical vector indicating whether elements of the sample are greater than 0
+*   a character vector of length 10
+*   a factor vector of length 10, with 3 different factor “levels”
+
+```{r echo=TRUE}
+p2_data <- tibble(
+      rand_samp = rnorm(10), 
+      logical = rand_samp >0, 
+      character = replicate(10, paste(sample(letters, 5, replace = TRUE), collapse = "")), 
+      factor = c("Level1", "Level2", "Level3", "Level1", "Level2", "Level3", "Level1", "Level2", "Level3", "Level1")
+)
+
+head(p2_data, n=3)
+```
+
+__Try to take the mean of each variable in your dataframe. What works and what doesn’t?__
+
+Trying to take the mean of all variables in the problem 2 data set (p2_data):
+
+rand_samp: `r round(mean(pull(p2_data, var = rand_samp)), digits=2)`
+
+logical: `r mean(pull(p2_data, var = logical))`
+
+character: `r mean(pull(p2_data, var = character))`
+
+factor: `r mean(pull(p2_data, var = factor))`
+
+The numeric and logical variables could be used to calculate a mean. The character and factor variables could not be used to calculate a mean.
+
+
+__Write a code chunk that applies the as.numeric function to the logical, character, and factor variables (please show this chunk but not the output).__
+
+```{r echo=TRUE, results='hide', warning=FALSE}
+# numeric 
+mean(as.numeric(pull(p2_data, var = rand_samp)))
+
+# logical 
+mean(as.numeric(pull(p2_data, var = logical)))
+
+#character 
+mean(as.numeric(pull(p2_data, var = character)))
+
+#factor
+mean(as.numeric(pull(p2_data, var = factor)))
+```
+
+__What happens, and why? Does this help explain what happens when you try to take the mean?__
+
+Attempting to coerce the character and factor variables into numeric format resulted in the replacement of data with ‘NA’ values. This is because these variables contained non-numeric characters that could not be coerced into a number format. The logical vector shows the percent of observation that are “TRUE” (obs.>0).
